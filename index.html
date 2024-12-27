@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Card Game for Kurtz</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: url('https://via.placeholder.com/800x600') no-repeat center center/cover;
+      color: white;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    #game-container {
+      position: relative;
+      margin: auto;
+      width: 80%;
+      max-width: 600px;
+      padding: 20px;
+      border: 2px solid white;
+      background-color: rgba(0, 0, 0, 0.8);
+      border-radius: 10px;
+    }
+
+    #card-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      justify-items: center;
+      margin-top: 20px;
+    }
+
+    .card {
+      width: 100px;
+      height: 150px;
+      background-color: black;
+      border-radius: 10px;
+      text-align: center;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
+      display: none;
+    }
+
+    .hidden img {
+      display: none;
+    }
+
+    .visible img {
+      display: block;
+    }
+
+    #message {
+      font-size: 20px;
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <h1>Let's play a game. Match two Cards!</h1>
+    <div id="card-container"></div>
+  </div>
+  <script>
+    const cardContainer = document.getElementById('card-container');
+
+    const images = [
+      'IMG_8304_.jpg',
+      'IMG_8305_.jpg',
+      'IMG_8306_.jpg',
+      'IMG_8302.jpg',
+      'IMG_8303.jpg',
+      'IMG_8307.jpg',
+      'IMG_8304_.jpg',
+      'IMG_8305_.jpg',
+      'IMG_8306_.jpg'
+    ]; // Pairs of images
+
+    let firstPick = null;
+    let secondPick = null;
+
+    // Shuffle images
+    images.sort(() => 0.5 - Math.random());
+
+    // Create card elements
+    images.forEach((src, index) => {
+      const card = document.createElement('div');
+      card.classList.add('card', 'hidden');
+      card.dataset.value = src;
+
+      const img = document.createElement('img');
+      img.src = src;
+      card.appendChild(img);
+
+      card.addEventListener('click', () => handleCardClick(card));
+      cardContainer.appendChild(card);
+    });
+
+    function handleCardClick(card) {
+      if (card.classList.contains('hidden') && !secondPick) {
+        card.classList.remove('hidden');
+        card.classList.add('visible');
+
+        if (!firstPick) {
+          firstPick = card;
+        } else {
+          secondPick = card;
+          checkMatch();
+        }
+      }
+    }
+
+    function checkMatch() {
+      if (firstPick.dataset.value === secondPick.dataset.value) {
+        setTimeout(() => {
+          openBirthdayMessage();
+        }, 500);
+      } else {
+        setTimeout(() => {
+          firstPick.classList.remove('visible');
+          firstPick.classList.add('hidden');
+          secondPick.classList.remove('visible');
+          secondPick.classList.add('hidden');
+        }, 1000);
+      }
+
+      setTimeout(() => {
+        firstPick = null;
+        secondPick = null;
+      }, 1000);
+    }
+
+    function openBirthdayMessage() {
+      const birthdayMessage = `<!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Happy Birthday, Kurtz!</title>
+          <style>
+            body {
+              font-family: 'Arial', sans-serif;
+              background: #000;
+              color: #fff;
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+              height: 100vh;
+              margin: 0;
+              text-align: center;
+            }
+            h1 {
+              font-size: 2rem;
+            }
+          </style>
+        </head>
+        <body>
+          <h1>Congrats, you did it! haha</h1>
+          <h2>Happy Birth day, Baby. </h2>
+          <h2>Hope you have an awesome year (with me)! lol</h2>
+          <h2>I appreciate every moment I spend with you.</h2>
+          <h2>Let's have a blaaaaaast tonight💖</h2>
+          <h2>Yui Takashima</h2>
+        </body>
+        </html>`;
+
+      const newWindow = window.open('', '_blank', 'width=600,height=400');
+      newWindow.document.write(birthdayMessage);
+      newWindow.document.close();
+    }
+  </script>
+</body>
+</html>
